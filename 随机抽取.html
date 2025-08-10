@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daria and Bruce Activities</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: white;
+            background-attachment: fixed;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+        }
+        
+        .selection-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .category-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        
+        .category-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .category-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+        
+        .category-btn.active {
+            background: rgba(255, 215, 0, 0.3);
+            border-color: gold;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+        
+        .pick-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+        
+        .pick-container {
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto 25px;
+        }
+        
+        .pick-display {
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .pick-display.empty {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .pick-display.picking {
+            animation: pulse 1s infinite;
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+        
+        .spin-button {
+            background: linear-gradient(45deg, #FF512F, #F09819);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .spin-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(45deg, #e64a1a, #d88a14);
+        }
+        
+        .spin-button:active {
+            transform: translateY(2px);
+        }
+        
+        .spin-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            color: #aaa;
+        }
+        
+        .result-container {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        #result {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            min-height: 1.8rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            color: gold;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .management-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        select, input {
+            flex: 1;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .add-button {
+            background: linear-gradient(45deg, #00b09b, #96c93d);
+            border: none;
+            padding: 14px 18px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            width: 100px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .add-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .categories {
+            margin-top: 20px;
+        }
+        
+        .category {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 18px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .category-name {
+            font-weight: bold;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .delete-category {
+            background: #ff6b6b;
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .delete-category:hover {
+            transform: scale(1.1);
+            background: #ff5252;
+        }
+        
+        .options-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        
+        .option-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .delete-option {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        
+        .delete-option:hover {
+            background: rgba(255, 107, 107, 0.2);
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.95rem;
+            opacity: 0.9;
+            padding: 15px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        .current-category {
+            font-size: 1.4rem;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 50px;
+            display: inline-block;
+        }
+        
+        .current-category span {
+            color: gold;
+            font-weight: bold;
+        }
+        
+        .success-banner {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 200, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            z-index: 1000;
+            animation: slideIn 0.5s, fadeOut 0.5s 2.5s forwards;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        @keyframes slideIn {
+            from { top: -50px; opacity: 0; }
+            to { top: 20px; opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+        
+        @keyframes resultPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 500px) {
+            .input-row {
+                flex-direction: column;
+            }
+            
+            .add-button {
+                width: 100%;
+            }
+            
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            .pick-display {
+                width: 200px;
+                height: 200px;
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-random"></i> Activites Selection</h1>
+            <p>For Daria ❤</p>
+        </header>
+        
+        <div class="app-container">
+            <section class="selection-section">
+                <h2 class="section-title"><i class="fas fa-list"></i> 选择类别</h2>
+                
+                <div class="category-selector" id="category-selector">
+                    <!-- 类别按钮会动态添加到这里 -->
+                </div>
+                
+                <div class="current-category" id="current-category">
+                    当前选择的类别: <span id="selected-category-name">未选择</span>
+                </div>
+            </section>
+            
+            <section class="pick-section">
+                <div class="pick-container">
+                    <div class="pick-display empty" id="pick-display">
+                        请选择类别并点击抽取
+                    </div>
+                </div>
+                <button id="spin-btn" class="spin-button" disabled>
+                    <i class="fas fa-random"></i> 随机抽取
+                </button>
+                
+                <div class="result-container">
+                    <div id="result">准备就绪</div>
+                </div>
+            </section>
+            
+            <section class="management-section">
+                <h2 class="section-title"><i class="fas fa-cog"></i> 类别与选项管理</h2>
+                
+                <div class="input-group">
+                    <div class="input-row">
+                        <input type="text" id="category-input" placeholder="输入新类别名称">
+                        <button id="add-category-btn" class="add-button">
+                            <i class="fas fa-plus"></i> 添加
+                        </button>
+                    </div>
+                    
+                    <div class="input-row">
+                        <select id="category-select"></select>
+                        <input type="text" id="option-input" placeholder="输入选项内容">
+                        <button id="add-option-btn" class="add-button">
+                            <i class="fas fa-plus"></i> 添加
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="categories" id="categories-container">
+                    <!-- 类别和选项会动态添加到这里 -->
+                </div>
+            </section>
+        </div>
+        
+        <footer>
+            <p>数据保存在您的浏览器中</p>
+        </footer>
+    </div>
+
+    <script>
+        // 初始数据
+        let categories = [
+            {
+                id: 1,
+                name: "餐饮",
+                color: "#FF9AA2",
+                options: ["火锅", "日料", "烧烤", "西餐", "川菜", "粤菜"]
+            },
+            {
+                id: 2,
+                name: "活动",
+                color: "#FFB7B2",
+                options: ["爬山", "看电影", "KTV", "桌游", "游泳", "露营"]
+            },
+            {
+                id: 3,
+                name: "电影",
+                color: "#FFDAC1",
+                options: ["科幻片", "喜剧片", "动作片", "爱情片", "恐怖片", "动画片"]
+            }
+        ];
+        
+        // 当前选中的类别
+        let selectedCategory = null;
+        
+        // DOM元素
+        const pickDisplay = document.getElementById('pick-display');
+        const spinBtn = document.getElementById('spin-btn');
+        const resultDiv = document.getElementById('result');
+        const categoryInput = document.getElementById('category-input');
+        const addCategoryBtn = document.getElementById('add-category-btn');
+        const categorySelect = document.getElementById('category-select');
+        const optionInput = document.getElementById('option-input');
+        const addOptionBtn = document.getElementById('add-option-btn');
+        const categoriesContainer = document.getElementById('categories-container');
+        const categorySelector = document.getElementById('category-selector');
+        const selectedCategoryName = document.getElementById('selected-category-name');
+        
+        // 是否正在抽取
+        let isPicking = false;
+        let pickInterval = null;
+        
+        // 从本地存储加载数据
+        function loadData() {
+            const savedData = localStorage.getItem('pickData');
+            if (savedData) {
+                categories = JSON.parse(savedData);
+            }
+        }
+        
+        // 保存数据到本地存储
+        function saveData() {
+            localStorage.setItem('pickData', JSON.stringify(categories));
+        }
+        
+        // 随机抽取
+        function pickRandomOption() {
+            if (!selectedCategory || selectedCategory.options.length === 0) {
+                resultDiv.textContent = "请先选择类别并添加选项";
+                return;
+            }
+            
+            if (isPicking) return;
+            
+            isPicking = true;
+            resultDiv.textContent = "抽取中...";
+            spinBtn.disabled = true;
+            
+            // 移除空状态类
+            pickDisplay.classList.remove('empty');
+            pickDisplay.classList.add('picking');
+            
+            // 清除之前的内容
+            pickDisplay.textContent = "";
+            
+            // 显示随机选项
+            let counter = 0;
+            const maxIterations = 20; // 随机显示的次数
+            const speed = 100; // 初始速度(ms)
+            
+            pickInterval = setInterval(() => {
+                const randomIndex = Math.floor(Math.random() * selectedCategory.options.length);
+                pickDisplay.textContent = selectedCategory.options[randomIndex];
+                
+                counter++;
+                
+                // 逐渐减慢速度
+                if (counter > maxIterations / 2) {
+                    clearInterval(pickInterval);
+                    pickInterval = setInterval(() => {
+                        const randomIndex = Math.floor(Math.random() * selectedCategory.options.length);
+                        pickDisplay.textContent = selectedCategory.options[randomIndex];
+                        
+                        counter++;
+                        
+                        if (counter >= maxIterations) {
+                            clearInterval(pickInterval);
+                            
+                            // 确定最终结果
+                            const finalIndex = Math.floor(Math.random() * selectedCategory.options.length);
+                            const selectedOption = selectedCategory.options[finalIndex];
+                            
+                            // 更新显示
+                            pickDisplay.textContent = selectedOption;
+                            resultDiv.textContent = selectedOption;
+                            pickDisplay.classList.remove('picking');
+                            
+                            // 启用按钮
+                            isPicking = false;
+                            spinBtn.disabled = false;
+                            
+                            // 庆祝效果
+                            celebrate();
+                            
+                            // 结果动画
+                            resultDiv.style.animation = "resultPulse 0.5s 3";
+                        }
+                    }, speed + (counter * 10)); // 逐渐减慢
+                }
+            }, speed);
+        }
+        
+        // 庆祝效果
+        function celebrate() {
+            // 显示成功提示
+            const banner = document.createElement('div');
+            banner.className = 'success-banner';
+            banner.innerHTML = '<i class="fas fa-check-circle"></i> 抽取完成！';
+            document.body.appendChild(banner);
+            
+            setTimeout(() => {
+                banner.remove();
+            }, 3000);
+        }
+        
+        // 添加新类别
+        function addCategory() {
+            const name = categoryInput.value.trim();
+            if (!name) return;
+            
+            // 检查是否已存在同名类别
+            if (categories.some(cat => cat.name.toLowerCase() === name.toLowerCase())) {
+                alert("该类别已存在！");
+                return;
+            }
+            
+            // 生成随机颜色
+            const colors = ["#FF9AA2", "#FFB7B2", "#FFDAC1", "#E2F0CB", "#B5EAD7", "#C7CEEA"];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            const newCategory = {
+                id: Date.now(),
+                name: name,
+                color: randomColor,
+                options: []
+            };
+            
+            categories.push(newCategory);
+            saveData();
+            updateCategorySelect();
+            renderCategories();
+            renderCategorySelector();
+            
+            categoryInput.value = "";
+        }
+        
+        // 添加选项
+        function addOption() {
+            const categoryId = parseInt(categorySelect.value);
+            const optionText = optionInput.value.trim();
+            
+            if (!optionText) return;
+            
+            const category = categories.find(cat => cat.id === categoryId);
+            if (!category) return;
+            
+            // 检查是否已存在同名选项
+            if (category.options.some(opt => opt.toLowerCase() === optionText.toLowerCase())) {
+                alert("该选项已存在！");
+                return;
+            }
+            
+            category.options.push(optionText);
+            saveData();
+            renderCategories();
+            
+            // 如果添加选项的类别是当前选中的类别，更新显示
+            if (selectedCategory && selectedCategory.id === categoryId) {
+                updatePickDisplay();
+            }
+            
+            optionInput.value = "";
+        }
+        
+        // 更新类别选择下拉框
+        function updateCategorySelect() {
+            categorySelect.innerHTML = "";
+            
+            categories.forEach(category => {
+                const option = document.createElement("option");
+                option.value = category.id;
+                option.textContent = category.name;
+                categorySelect.appendChild(option);
+            });
+        }
+        
+        // 渲染类别选择器
+        function renderCategorySelector() {
+            categorySelector.innerHTML = "";
+            
+            categories.forEach(category => {
+                const button = document.createElement("button");
+                button.className = "category-btn";
+                if (selectedCategory && selectedCategory.id === category.id) {
+                    button.classList.add("active");
+                }
+                button.innerHTML = `<i class="fas fa-${getCategoryIcon(category.name)}"></i> ${category.name}`;
+                button.onclick = () => selectCategory(category);
+                categorySelector.appendChild(button);
+            });
+        }
+        
+        // 获取类别图标
+        function getCategoryIcon(name) {
+            const icons = {
+                "餐饮": "utensils",
+                "活动": "running",
+                "电影": "film",
+                "旅行": "plane",
+                "购物": "shopping-bag",
+                "学习": "book",
+                "运动": "basketball-ball",
+                "游戏": "gamepad"
+            };
+            
+            return icons[name] || "folder";
+        }
+        
+        // 选择类别
+        function selectCategory(category) {
+            selectedCategory = category;
+            selectedCategoryName.textContent = category.name;
+            renderCategorySelector();
+            spinBtn.disabled = false;
+            resultDiv.textContent = `已选择 ${category.name} 类别`;
+            updatePickDisplay();
+        }
+        
+        // 更新抽取显示
+        function updatePickDisplay() {
+            if (!selectedCategory || selectedCategory.options.length === 0) {
+                pickDisplay.textContent = "请添加选项";
+                pickDisplay.classList.add('empty');
+            } else {
+                pickDisplay.textContent = "点击抽取";
+                pickDisplay.classList.add('empty');
+            }
+        }
+        
+        // 渲染类别和选项列表
+        function renderCategories() {
+            categoriesContainer.innerHTML = "";
+            
+            if (categories.length === 0) {
+                categoriesContainer.innerHTML = '<p class="empty">暂无类别，请添加新类别</p>';
+                return;
+            }
+            
+            categories.forEach(category => {
+                const categoryEl = document.createElement("div");
+                categoryEl.className = "category";
+                
+                const categoryHeader = document.createElement("div");
+                categoryHeader.className = "category-header";
+                
+                const categoryName = document.createElement("div");
+                categoryName.className = "category-name";
+                categoryName.innerHTML = `<i class="fas fa-${getCategoryIcon(category.name)}" style="color:${category.color}"></i> ${category.name}`;
+                
+                const deleteBtn = document.createElement("button");
+                deleteBtn.className = "delete-category";
+                deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+                deleteBtn.onclick = () => deleteCategory(category.id);
+                
+                categoryHeader.appendChild(categoryName);
+                categoryHeader.appendChild(deleteBtn);
+                
+                const optionsList = document.createElement("ul");
+                optionsList.className = "options-list";
+                
+                category.options.forEach((option, index) => {
+                    const optionItem = document.createElement("li");
+                    optionItem.className = "option-item";
+                    
+                    const optionText = document.createElement("span");
+                    optionText.textContent = option;
+                    
+                    const deleteOptionBtn = document.createElement("button");
+                    deleteOptionBtn.className = "delete-option";
+                    deleteOptionBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                    deleteOptionBtn.onclick = () => deleteOption(category.id, index);
+                    
+                    optionItem.appendChild(optionText);
+                    optionItem.appendChild(deleteOptionBtn);
+                    optionsList.appendChild(optionItem);
+                });
+                
+                if (category.options.length === 0) {
+                    const emptyOption = document.createElement("li");
+                    emptyOption.className = "option-item";
+                    emptyOption.textContent = "暂无选项";
+                    emptyOption.style.gridColumn = "1 / -1";
+                    emptyOption.style.textAlign = "center";
+                    optionsList.appendChild(emptyOption);
+                }
+                
+                categoryEl.appendChild(categoryHeader);
+                categoryEl.appendChild(optionsList);
+                categoriesContainer.appendChild(categoryEl);
+            });
+        }
+        
+        // 删除类别
+        function deleteCategory(categoryId) {
+            if (!confirm("确定要删除这个类别及其所有选项吗？")) return;
+            
+            // 如果删除的是当前选中的类别，重置选择
+            if (selectedCategory && selectedCategory.id === categoryId) {
+                selectedCategory = null;
+                selectedCategoryName.textContent = "未选择";
+                spinBtn.disabled = true;
+                resultDiv.textContent = "请选择类别";
+                updatePickDisplay();
+            }
+            
+            categories = categories.filter(cat => cat.id !== categoryId);
+            saveData();
+            updateCategorySelect();
+            renderCategories();
+            renderCategorySelector();
+        }
+        
+        // 删除选项
+        function deleteOption(categoryId, optionIndex) {
+            const category = categories.find(cat => cat.id === categoryId);
+            if (category && category.options[optionIndex]) {
+                if (!confirm(`确定要删除"${category.options[optionIndex]}"选项吗？`)) return;
+                
+                category.options.splice(optionIndex, 1);
+                saveData();
+                renderCategories();
+                
+                // 如果删除的是当前选中的类别选项，更新显示
+                if (selectedCategory && selectedCategory.id === categoryId) {
+                    updatePickDisplay();
+                }
+            }
+        }
+        
+        // 初始化应用
+        function initApp() {
+            loadData();
+            updateCategorySelect();
+            renderCategories();
+            renderCategorySelector();
+            updatePickDisplay();
+            
+            // 添加事件监听器
+            spinBtn.addEventListener("click", pickRandomOption);
+            addCategoryBtn.addEventListener("click", addCategory);
+            addOptionBtn.addEventListener("click", addOption);
+            
+            // 支持按Enter键添加
+            categoryInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") addCategory();
+            });
+            
+            optionInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") addOption();
+            });
+        }
+        
+        // 页面加载完成后初始化
+        window.onload = initApp;
+    </script>
+</body>
+</html>
